@@ -25,19 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clonar el repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Instalar, compilar y preparar Astro
-        uses: withastro/action@v3
+      - name: Instalar, compilar y subir el sitio como artefacto de Pages
+        # withastro/action instala, compila con Astro Y sube el artefacto de
+        # Pages internamente. NO agregar aquí un paso aparte con
+        # actions/upload-pages-artifact: crea un artefacto con el mismo
+        # nombre y el workflow falla con "409 Conflict".
+        uses: withastro/action@v6
         with:
-          # Astro 7 requiere Node >=22.12.0; sin este input la acción usaba
-          # Node 20 por defecto y el build fallaba.
+          # Astro 7 requiere Node >=22.12.0.
           node-version: 22
-
-      - name: Subir el sitio compilado como artefacto de Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
 
   deploy:
     needs: build
@@ -48,4 +46,4 @@ jobs:
     steps:
       - name: Publicar en GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
