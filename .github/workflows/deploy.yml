@@ -29,6 +29,10 @@ jobs:
 
       - name: Instalar, compilar y preparar Astro
         uses: withastro/action@v3
+        with:
+          # Astro 7 requiere Node >=22.12.0; sin este input la acción usaba
+          # Node 20 por defecto y el build fallaba.
+          node-version: 22
 
       - name: Subir el sitio compilado como artefacto de Pages
         uses: actions/upload-pages-artifact@v3
