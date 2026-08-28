@@ -1,0 +1,39 @@
+---
+// Layout base: define el <html>...</html> completo (head + body) que
+// comparten TODAS las páginas del sitio. Cada página (index.astro,
+// quienes-somos.astro, blog/[slug].astro, etc.) se envuelve en este
+// layout y le pasa un título/descripción por props; el contenido propio
+// de cada página se inyecta en el <slot />.
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+	titulo: string;
+	descripcion?: string;
+}
+
+const {
+	titulo,
+	descripcion = 'Blog de la Fundación FundeUpia.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="description" content={descripcion} />
+		<meta name="generator" content={Astro.generator} />
+		<title>{titulo} · FundeUpia</title>
+	</head>
+	<body>
+		<Header />
+		<main class="contenedor">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

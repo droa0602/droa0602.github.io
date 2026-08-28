@@ -1,0 +1,37 @@
+---
+// Layout para la página de UNA entrada del blog. Se usa desde
+// src/pages/blog/[slug].astro. Se apoya en BaseLayout para el <html>
+// general y agrega la cabecera propia de un artículo: título, fecha y
+// autor. El cuerpo Markdown ya renderizado a HTML llega por <slot />.
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	titulo: string;
+	descripcion: string;
+	fecha: Date;
+	autor: string;
+}
+
+const { titulo, descripcion, fecha, autor } = Astro.props;
+
+const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+	day: 'numeric',
+	month: 'long',
+	year: 'numeric',
+});
+---
+
+<BaseLayout titulo={titulo} descripcion={descripcion}>
+	<a href="/" class="enlace-volver">&larr; Volver al blog</a>
+	<article>
+		<header class="encabezado-entrada">
+			<p class="fecha-entrada">
+				{fechaFormateada} · {autor}
+			</p>
+			<h1>{titulo}</h1>
+		</header>
+		<div class="cuerpo-entrada">
+			<slot />
+		</div>
+	</article>
+</BaseLayout>

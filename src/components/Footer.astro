@@ -1,0 +1,13 @@
+---
+// Pie de página del sitio, incluido por BaseLayout.astro en todas las
+// páginas. El año se calcula en el momento del build (no en el navegador
+// del visitante), por eso queda "congelado" a la fecha en que se publicó
+// el sitio hasta el próximo despliegue.
+const anio = new Date().getFullYear();
+---
+
+<footer class="sitio-footer">
+	<div class="contenedor">
+		<p>© {anio} Fundación FundeUpia. Todos los derechos reservados.</p>
+	</div>
+</footer>

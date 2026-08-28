@@ -1,0 +1,29 @@
+---
+// Ruta dinámica: genera una página HTML por cada archivo .md dentro de
+// src/content/blog. getStaticPaths() le dice a Astro, en tiempo de build,
+// cuáles URLs debe crear ("/blog/entrada-1/", "/blog/entrada-2/", etc.)
+// y qué datos ("props") le pasa a cada una. Como el sitio se despliega
+// como HTML estático en GitHub Pages, todas estas páginas se generan de
+// una vez durante `astro build`, no en cada visita.
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+	const entradas = await getCollection('blog');
+	return entradas.map((entrada) => ({
+		params: { slug: entrada.id },
+		props: { entrada },
+	}));
+}
+
+const { entrada } = Astro.props;
+const { title, description, pubDate, author } = entrada.data;
+
+// render() convierte el Markdown de la entrada en HTML listo para
+// mostrar. <Content /> es el componente que imprime ese HTML.
+const { Content } = await render(entrada);
+---
+
+<PostLayout titulo={title} descripcion={description} fecha={pubDate} autor={author}>
+	<Content />
+</PostLayout>

@@ -1,0 +1,40 @@
+---
+// Página principal ("/"). Lee TODAS las entradas de la colección "blog"
+// (definida en src/content.config.ts), las ordena por fecha de más
+// reciente a más antigua, y las muestra como una lista de tarjetas.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const entradas = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<BaseLayout
+	titulo="Blog"
+	descripcion="Noticias y actualizaciones de la Fundación FundeUpia."
+>
+	<h1>Blog de FundeUpia</h1>
+	<p>Noticias, historias y novedades de nuestra fundación.</p>
+
+	<ul class="lista-entradas">
+		{
+			entradas.map((entrada) => {
+				const fecha = entrada.data.pubDate.toLocaleDateString('es-ES', {
+					day: 'numeric',
+					month: 'long',
+					year: 'numeric',
+				});
+				return (
+					<li class="tarjeta-entrada">
+						<h2>
+							<a href={`/blog/${entrada.id}/`}>{entrada.data.title}</a>
+						</h2>
+						<p class="fecha-entrada">{fecha}</p>
+						<p>{entrada.data.description}</p>
+					</li>
+				);
+			})
+		}
+	</ul>
+</BaseLayout>

@@ -1,0 +1,47 @@
+# Workflow de GitHub Actions: compila el sitio con Astro y lo publica en
+# GitHub Pages cada vez que hay un push a la rama principal (main). No hace
+# falta correr ningún comando a mano: GitHub lo ejecuta automáticamente.
+name: Desplegar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Permite lanzar el despliegue manualmente desde la pestaña "Actions".
+  workflow_dispatch:
+
+# Permisos mínimos que necesita el workflow para publicar en Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita que dos despliegues se pisen si hay pushes seguidos.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar, compilar y preparar Astro
+        uses: withastro/action@v3
+
+      - name: Subir el sitio compilado como artefacto de Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
