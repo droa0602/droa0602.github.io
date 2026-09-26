@@ -1,22 +1,29 @@
 ---
 // Layout base: define el <html>...</html> completo (head + body) que
-// comparten TODAS las páginas del sitio. Cada página (index.astro,
-// quienes-somos.astro, blog/[slug].astro, etc.) se envuelve en este
-// layout y le pasa un título/descripción por props; el contenido propio
-// de cada página se inyecta en el <slot />.
+// comparten TODAS las páginas del sitio. Cada página se envuelve en este
+// layout y le pasa un título/descripción por props; el contenido propio de
+// cada página se inyecta en el <slot />.
+//
+// `ancho`: controla el ancho del contenido.
+//   - 'sitio'    → ancho amplio (por defecto), para páginas con tarjetas.
+//   - 'lectura'  → columna angosta, para textos largos (entradas del blog).
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import BotonRadioEnVivo from '../components/BotonRadioEnVivo.astro';
+import { sitio, radio } from '../config/sitio';
 import '../styles/global.css';
 
 interface Props {
 	titulo: string;
 	descripcion?: string;
+	ancho?: 'sitio' | 'lectura';
 }
 
-const {
-	titulo,
-	descripcion = 'Blog de la Fundación FundeUpia.',
-} = Astro.props;
+const { titulo, descripcion = sitio.descripcion, ancho = 'sitio' } = Astro.props;
+
+// La clase 'con-boton-radio' del <body> reserva espacio al final de la página
+// para que el botón flotante de la radio no tape el pie en celular. Solo se
+// aplica cuando el botón está activado en la configuración.
 ---
 
 <!doctype html>
@@ -27,13 +34,14 @@ const {
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="description" content={descripcion} />
 		<meta name="generator" content={Astro.generator} />
-		<title>{titulo} · FundeUpia</title>
+		<title>{titulo} · {sitio.nombre}</title>
 	</head>
-	<body>
+	<body class:list={{ 'con-boton-radio': radio.radioEnVivo }}>
 		<Header />
-		<main class="contenedor">
+		<main class:list={['contenedor', { 'contenedor-lectura': ancho === 'lectura' }]}>
 			<slot />
 		</main>
 		<Footer />
+		<BotonRadioEnVivo />
 	</body>
 </html>

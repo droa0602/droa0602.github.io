@@ -1,0 +1,3 @@
+Fotos del equipo directivo y de los presentadores de la radio.
+Luego se escribe su ruta en las listas `equipo` y `radio.presentadores` de
+src/config/sitio.ts, por ejemplo: /equipo/ana-gomez.jpg

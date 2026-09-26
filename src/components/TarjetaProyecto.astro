@@ -1,0 +1,43 @@
+---
+// Tarjeta de un proyecto. La usan tanto el Inicio (proyectos destacados)
+// como la página /proyectos/ (listado completo), para que las dos se vean
+// igual y haya un solo sitio donde cambiar el diseño de la tarjeta.
+//
+// Recibe una entrada de la colección "proyectos" tal como la devuelve
+// getCollection('proyectos').
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	proyecto: CollectionEntry<'proyectos'>;
+}
+
+const { proyecto } = Astro.props;
+const { titulo, resumen, imagen, fecha, destacado } = proyecto.data;
+
+const enlace = `/proyectos/${proyecto.id}/`;
+const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+	month: 'long',
+	year: 'numeric',
+});
+---
+
+<li class="tarjeta">
+	{
+		imagen ? (
+			<img src={imagen} alt={titulo} class="tarjeta-imagen" loading="lazy" />
+		) : (
+			/* Relleno mientras el proyecto no tenga foto, para que la tarjeta
+			   no se vea rota. */
+			<div class="tarjeta-imagen-vacia">TODO: agregar imagen</div>
+		)
+	}
+	<div class="tarjeta-cuerpo">
+		{destacado && <span class="etiqueta">Destacado</span>}
+		<h3><a href={enlace}>{titulo}</a></h3>
+		<p class="fecha">{fechaFormateada}</p>
+		<p>{resumen}</p>
+		<p class="tarjeta-pie">
+			<a href={enlace}>Ver el proyecto &rarr;</a>
+		</p>
+	</div>
+</li>

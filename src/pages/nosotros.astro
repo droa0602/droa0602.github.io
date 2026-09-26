@@ -1,0 +1,154 @@
+---
+// Página "Nosotros" ("/nosotros/"): historia, misión, visión, equipo
+// directivo y transparencia.
+//
+// Los TEXTOS largos (historia, misión, visión) se escriben aquí mismo, porque
+// son propios de esta página. En cambio el EQUIPO y los DOCUMENTOS salen de
+// src/config/sitio.ts, porque son listas que se editan seguido y conviene
+// tenerlas en un solo archivo.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sitio, equipo, documentos } from '../config/sitio';
+
+/**
+ * Iniciales de una persona, para el círculo que se muestra cuando todavía no
+ * hay foto. Quita el prefijo "TODO:" para que no salga una "T".
+ */
+function iniciales(nombre: string) {
+	return nombre
+		.replace(/^TODO:\s*/i, '')
+		.split(/\s+/)
+		.filter(Boolean)
+		.slice(0, 2)
+		.map((palabra) => palabra[0].toUpperCase())
+		.join('');
+}
+---
+
+<BaseLayout
+	titulo="Nosotros"
+	descripcion="Historia, misión, visión, equipo y documentos de la Fundación FundeUpia."
+>
+	<h1>Nosotros</h1>
+
+	<!-- HISTORIA -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Nuestra historia</h2>
+		<div class="cuerpo-entrada">
+			<p>
+				<!-- TODO: reemplazar por la historia real. -->
+				TODO: cuenta cómo y cuándo nació {sitio.nombreCompleto}, quién la
+				fundó y qué necesidad de la comunidad la motivó. Dos o tres párrafos
+				son suficientes.
+			</p>
+			<p>
+				TODO: segundo párrafo de la historia: los primeros proyectos, los
+				aliados que aparecieron y cómo ha crecido la fundación hasta hoy.
+			</p>
+		</div>
+	</section>
+
+	<!-- MISIÓN Y VISIÓN -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Misión y visión</h2>
+		<ul class="rejilla">
+			<li class="tarjeta-plana">
+				<h3>Misión</h3>
+				<p>
+					<!-- TODO: reemplazar por la misión real. -->
+					TODO: escribe la misión de la fundación: qué hace, para quién y con
+					qué propósito.
+				</p>
+			</li>
+			<li class="tarjeta-plana">
+				<h3>Visión</h3>
+				<p>
+					<!-- TODO: reemplazar por la visión real. -->
+					TODO: escribe la visión: dónde quiere estar la fundación en los
+					próximos años.
+				</p>
+			</li>
+		</ul>
+	</section>
+
+	<!-- EQUIPO DIRECTIVO (se edita en src/config/sitio.ts) -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Equipo directivo</h2>
+		<p class="seccion-intro">
+			Las personas que dirigen y representan a la fundación.
+		</p>
+		<ul class="rejilla rejilla-cuatro">
+			{
+				equipo.map((persona) => (
+					<li class="tarjeta-persona">
+						{
+							persona.foto ? (
+								<img
+									src={persona.foto}
+									alt={persona.nombre}
+									class="persona-foto"
+									loading="lazy"
+								/>
+							) : (
+								/* Círculo con iniciales mientras no haya foto. */
+								<div class="persona-inicial" aria-hidden="true">
+									{iniciales(persona.nombre)}
+								</div>
+							)
+						}
+						<p class="persona-nombre">{persona.nombre}</p>
+						<p class="persona-cargo">{persona.cargo}</p>
+					</li>
+				))
+			}
+		</ul>
+		<p class="aviso-todo">
+			<strong>TODO:</strong> reemplazar nombres y cargos en la lista
+			<code>equipo</code> de <code>src/config/sitio.ts</code>, y subir las
+			fotos a <code>public/equipo/</code> (por ejemplo
+			<code>/equipo/ana-gomez.jpg</code>).
+		</p>
+	</section>
+
+	<!-- TRANSPARENCIA (los PDFs van en public/documentos/) -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Transparencia</h2>
+		<p class="seccion-intro">
+			Publicamos aquí los documentos que dan cuenta del uso de nuestros
+			recursos y de nuestra situación legal.
+		</p>
+
+		<ul class="lista-documentos">
+			{
+				documentos.map((documento) => (
+					<li>
+						<span class="documento-nombre">
+							{documento.nombre}
+							{documento.anio && <span class="documento-anio"> · {documento.anio}</span>}
+						</span>
+						{
+							documento.archivo ? (
+								/* target="_blank" para que el PDF se abra aparte y el
+								   visitante no pierda la página. */
+								<a href={documento.archivo} class="boton-secundario" target="_blank" rel="noopener">
+									Descargar PDF
+								</a>
+							) : (
+								/* Sin archivo todavía: se muestra como pendiente en vez de
+								   dejar un enlace roto. */
+								<span class="documento-pendiente">Pendiente de publicar</span>
+							)
+						}
+					</li>
+				))
+			}
+		</ul>
+
+		<p class="aviso-todo">
+			<strong>TODO:</strong> subir cada PDF a <code>public/documentos/</code> y
+			escribir su ruta en la lista <code>documentos</code> de
+			<code>src/config/sitio.ts</code> (por ejemplo
+			<code>/documentos/informe-gestion-2025.pdf</code>). Mientras la ruta esté
+			vacía, la fila aparece como "pendiente de publicar".
+		</p>
+	</section>
+</BaseLayout>

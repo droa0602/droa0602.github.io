@@ -19,5 +19,5 @@ Queremos que este blog sea, sobre todo, un canal de cercanía con quienes
 nos siguen y apoyan. Gracias por acompañarnos en este nuevo paso.
 
 Si tienes preguntas o quieres colaborar, visita nuestra página
-[Quiénes somos](/quienes-somos/) para conocer cómo ponerte en contacto
+[Nosotros](/nosotros/) para conocer cómo ponerte en contacto
 con nosotros.

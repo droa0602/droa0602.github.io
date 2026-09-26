@@ -1,40 +1,107 @@
 ---
-// Página principal ("/"). Lee TODAS las entradas de la colección "blog"
-// (definida en src/content.config.ts), las ordena por fecha de más
-// reciente a más antigua, y las muestra como una lista de tarjetas.
+// Página de Inicio ("/"). Tiene tres partes:
+//   1. Sección principal: nombre de la fundación y frase que explica qué hace.
+//   2. Tarjetas de los proyectos marcados con `destacado: true`.
+//   3. Bloque pequeño de la radio (frecuencia y horario de emisión).
+//
+// Los textos institucionales están aquí; los datos que se repiten en el sitio
+// (nombre, lema, radio) salen de src/config/sitio.ts, y los proyectos de la
+// colección de contenido.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TarjetaProyecto from '../components/TarjetaProyecto.astro';
 import { getCollection } from 'astro:content';
+import { sitio, radio } from '../config/sitio';
 
-const entradas = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+// Solo los proyectos destacados, del más reciente al más antiguo, máximo 3
+// para que la portada no se alargue.
+const destacados = (await getCollection('proyectos'))
+	.filter((proyecto) => proyecto.data.destacado)
+	.sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
+	.slice(0, 3);
 ---
 
-<BaseLayout
-	titulo="Blog"
-	descripcion="Noticias y actualizaciones de la Fundación FundeUpia."
->
-	<h1>Blog de FundeUpia</h1>
-	<p>Noticias, historias y novedades de nuestra fundación.</p>
+<BaseLayout titulo="Inicio" descripcion={sitio.descripcion}>
+	<!-- 1. Sección principal -->
+	<section class="hero">
+		<h1>{sitio.nombreCompleto}</h1>
+		<p class="hero-lema">{sitio.lema}</p>
+		<div class="grupo-botones">
+			<a href="/proyectos/" class="boton">Ver nuestros proyectos</a>
+			<a href="/nosotros/" class="boton-secundario">Conócenos</a>
+		</div>
+	</section>
 
-	<ul class="lista-entradas">
+	<!-- Presentación breve de la fundación -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Qué hacemos</h2>
+		<p class="seccion-intro">
+			<!-- TODO: reemplazar por el texto real. -->
+			TODO: dos o tres frases que expliquen a qué se dedica la fundación, en
+			qué zona trabaja y con qué comunidades. Este es el primer texto que lee
+			quien no conoce a FundeUpia.
+		</p>
+		<ul class="rejilla rejilla-tres">
+			<li class="tarjeta-plana">
+				<h3>TODO: Línea de trabajo 1</h3>
+				<p>TODO: una frase que explique esta línea de trabajo.</p>
+			</li>
+			<li class="tarjeta-plana">
+				<h3>TODO: Línea de trabajo 2</h3>
+				<p>TODO: una frase que explique esta línea de trabajo.</p>
+			</li>
+			<li class="tarjeta-plana">
+				<h3>TODO: Línea de trabajo 3</h3>
+				<p>TODO: una frase que explique esta línea de trabajo.</p>
+			</li>
+		</ul>
+	</section>
+
+	<!-- 2. Proyectos destacados (vienen de src/content/proyectos/) -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Proyectos destacados</h2>
+		<p class="seccion-intro">
+			Estos son algunos de los proyectos que estamos desarrollando.
+		</p>
+
 		{
-			entradas.map((entrada) => {
-				const fecha = entrada.data.pubDate.toLocaleDateString('es-ES', {
-					day: 'numeric',
-					month: 'long',
-					year: 'numeric',
-				});
-				return (
-					<li class="tarjeta-entrada">
-						<h2>
-							<a href={`/blog/${entrada.id}/`}>{entrada.data.title}</a>
-						</h2>
-						<p class="fecha-entrada">{fecha}</p>
-						<p>{entrada.data.description}</p>
-					</li>
-				);
-			})
+			destacados.length === 0 ? (
+				<p>
+					Ningún proyecto está marcado como destacado. Para que aparezca aquí,
+					poner <code>destacado: true</code> en su archivo de
+					src/content/proyectos/.
+				</p>
+			) : (
+				<ul class="rejilla">
+					{destacados.map((proyecto) => (
+						<TarjetaProyecto proyecto={proyecto} />
+					))}
+				</ul>
+			)
 		}
-	</ul>
+
+		<div class="grupo-botones">
+			<a href="/proyectos/" class="boton-secundario">Ver todos los proyectos</a>
+		</div>
+	</section>
+
+	<!-- 3. Bloque de la radio: por ahora solo frecuencia y horario -->
+	<section class="bloque-radio">
+		<div>
+			<h2>{radio.nombre}</h2>
+			<p>{radio.lema}</p>
+			<ul class="radio-datos">
+				<li>
+					<strong>Frecuencia</strong>
+					<span class="frecuencia-grande">{radio.frecuencia}</span>
+				</li>
+				<li>
+					<strong>Emisión</strong>
+					<span>{radio.horario}</span>
+				</li>
+			</ul>
+		</div>
+		<div>
+			<a href="/radio/" class="boton">Ver la programación</a>
+		</div>
+	</section>
 </BaseLayout>

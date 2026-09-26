@@ -1,0 +1,47 @@
+---
+// Ruta dinámica: genera una página por cada archivo .md de
+// src/content/proyectos/. getStaticPaths() le dice a Astro, durante el
+// build, qué URLs crear ("/proyectos/huertas-comunitarias/", etc.). Como el
+// sitio se publica como HTML estático en GitHub Pages, todas se generan de
+// una vez al compilar y no hace falta servidor.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+	const proyectos = await getCollection('proyectos');
+	return proyectos.map((proyecto) => ({
+		params: { slug: proyecto.id },
+		props: { proyecto },
+	}));
+}
+
+const { proyecto } = Astro.props;
+const { titulo, resumen, imagen, fecha } = proyecto.data;
+
+// render() convierte el Markdown del proyecto en HTML; <Content /> lo imprime.
+const { Content } = await render(proyecto);
+
+const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+	day: 'numeric',
+	month: 'long',
+	year: 'numeric',
+});
+---
+
+<BaseLayout titulo={titulo} descripcion={resumen} ancho="lectura">
+	<a href="/proyectos/" class="enlace-volver">&larr; Todos los proyectos</a>
+
+	<article>
+		<header class="encabezado-entrada">
+			<p class="fecha-entrada">Desde {fechaFormateada}</p>
+			<h1>{titulo}</h1>
+			<p>{resumen}</p>
+		</header>
+
+		{imagen && <img src={imagen} alt={titulo} />}
+
+		<div class="cuerpo-entrada">
+			<Content />
+		</div>
+	</article>
+</BaseLayout>

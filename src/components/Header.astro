@@ -1,15 +1,104 @@
 ---
-// Encabezado del sitio: se muestra en todas las páginas (lo incluye
-// BaseLayout.astro). Es un componente aparte solo para mantener
-// BaseLayout.astro corto y fácil de leer.
+// Encabezado del sitio: logo + menú de navegación. Lo incluye BaseLayout.astro,
+// así que aparece en todas las páginas.
+//
+// Las pestañas NO están escritas aquí: salen de `navegacion` en
+// src/config/sitio.ts. Para agregar, quitar o reordenar pestañas se edita
+// ese archivo.
+//
+// En celular el menú arranca oculto y se abre con el botón hamburguesa
+// (el <script> del final). En pantallas de 768px o más el menú siempre se
+// ve y el botón desaparece; si el visitante tiene JavaScript desactivado,
+// en celular el menú queda visible en vez de quedar inaccesible.
+import { sitio, navegacion } from '../config/sitio';
+
+// Ruta de la página actual, para marcar la pestaña activa. Se le quita la
+// barra final para que '/radio/' y '/radio' se comparen igual.
+const rutaActual = Astro.url.pathname.replace(/\/+$/, '') || '/';
+
+function esActiva(href: string) {
+	const ruta = href.replace(/\/+$/, '') || '/';
+	// El Inicio solo se marca en la raíz exacta; las demás pestañas también
+	// se marcan en sus páginas internas (ej. /proyectos/mi-proyecto/).
+	return ruta === '/' ? rutaActual === '/' : rutaActual.startsWith(ruta);
+}
 ---
 
+<!-- Marca que el navegador tiene JavaScript. Va aquí arriba y como
+     script "is:inline" para que se ejecute ANTES de dibujar el menú: así el
+     menú de celular ya nace cerrado y no se ve un parpadeo. Si JavaScript
+     está desactivado, esta clase nunca se agrega y el CSS deja el menú
+     visible en lugar de dejarlo inaccesible. -->
+<script is:inline>
+	document.documentElement.classList.add('js-activo');
+</script>
+
 <header class="sitio-header">
-	<div class="contenedor">
-		<a href="/" class="marca">Funde<span>Upia</span></a>
-		<nav class="nav-principal">
-			<a href="/">Blog</a>
-			<a href="/quienes-somos/">Quiénes somos</a>
+	<div class="contenedor cabecera-fila">
+		<a href="/" class="marca">
+			{
+				sitio.logo ? (
+					<img src={sitio.logo} alt={sitio.nombreCompleto} class="marca-logo" />
+				) : (
+					<span class="marca-texto">{sitio.nombre}</span>
+				)
+			}
+		</a>
+
+		<!-- Botón hamburguesa: solo se ve en celular. -->
+		<button
+			type="button"
+			class="boton-menu"
+			id="boton-menu"
+			aria-controls="menu-principal"
+			aria-expanded="false"
+			aria-label="Abrir menú de navegación"
+		>
+			<span class="boton-menu-barras" aria-hidden="true"></span>
+		</button>
+
+		<nav class="nav-principal" id="menu-principal" aria-label="Menú principal">
+			{
+				navegacion.map((item) => (
+					<a href={item.href} aria-current={esActiva(item.href) ? 'page' : undefined}>
+						{item.texto}
+					</a>
+				))
+			}
 		</nav>
 	</div>
 </header>
+
+<script>
+	// Abre y cierra el menú en celular. Es JavaScript normal del navegador
+	// (sin librerías): alterna la clase 'menu-abierto' en el <header> y
+	// mantiene aria-expanded al día para los lectores de pantalla.
+	const boton = document.getElementById('boton-menu');
+	const cabecera = boton?.closest('.sitio-header');
+
+	function cerrarMenu() {
+		cabecera?.classList.remove('menu-abierto');
+		boton?.setAttribute('aria-expanded', 'false');
+		boton?.setAttribute('aria-label', 'Abrir menú de navegación');
+	}
+
+	boton?.addEventListener('click', () => {
+		const abierto = cabecera?.classList.toggle('menu-abierto');
+		boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+		boton.setAttribute(
+			'aria-label',
+			abierto ? 'Cerrar menú de navegación' : 'Abrir menú de navegación',
+		);
+	});
+
+	// Cerrar con la tecla Escape.
+	document.addEventListener('keydown', (evento) => {
+		if (evento.key === 'Escape') cerrarMenu();
+	});
+
+	// Cerrar al tocar una pestaña (útil si en el futuro hay enlaces a
+	// secciones de la misma página, donde no hay recarga).
+	document
+		.querySelectorAll('#menu-principal a')
+		.forEach((enlace) => enlace.addEventListener('click', cerrarMenu));
+</script>

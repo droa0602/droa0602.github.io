@@ -1,0 +1,143 @@
+---
+// Página de la Radio ("/radio/").
+//
+// La emisora todavía transmite SOLO al aire, así que por ahora la página
+// muestra frecuencia, programación y presentadores. El espacio del video en
+// vivo ya está montado más abajo: cuando haya transmisión por YouTube basta
+// con poner `transmision.activa: true` y el `videoId` en
+// src/config/sitio.ts; no hay que tocar este archivo.
+//
+// Todos los datos (frecuencia, horario, programación, presentadores) salen de
+// `radio` en src/config/sitio.ts.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { radio } from '../config/sitio';
+
+/** Iniciales para el círculo de los presentadores que no tienen foto. */
+function iniciales(nombre: string) {
+	return nombre
+		.replace(/^TODO:\s*/i, '')
+		.split(/\s+/)
+		.filter(Boolean)
+		.slice(0, 2)
+		.map((palabra) => palabra[0].toUpperCase())
+		.join('');
+}
+
+// Solo se muestra el reproductor si está activada Y hay un videoId puesto.
+const hayTransmision = radio.transmision.activa && radio.transmision.videoId !== '';
+---
+
+<BaseLayout
+	titulo={radio.nombre}
+	descripcion={`${radio.nombre}: ${radio.frecuencia}. Programación y presentadores.`}
+>
+	<!-- Encabezado con la frecuencia, que es el dato principal por ahora -->
+	<section class="radio-encabezado">
+		<h1>{radio.nombre}</h1>
+		<p>{radio.lema}</p>
+		<p class="frecuencia-grande">{radio.frecuencia}</p>
+		<p>{radio.horario}</p>
+	</section>
+
+	<!-- TRANSMISIÓN EN VIVO: hueco ya preparado, apagado por configuración -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Transmisión en vivo</h2>
+		{
+			hayTransmision ? (
+				<div class="video-embed">
+					<iframe
+						src={`https://www.youtube.com/embed/${radio.transmision.videoId}`}
+						title={`Transmisión en vivo de ${radio.nombre}`}
+						loading="lazy"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						allowfullscreen
+					></iframe>
+				</div>
+			) : (
+				<div class="transmision-pendiente">
+					<p>
+						<strong>Por ahora transmitimos solo al aire</strong>, en la
+						frecuencia {radio.frecuencia}.
+					</p>
+					<p>
+						Pronto podrás escucharnos y vernos por internet desde esta misma
+						página.
+					</p>
+				</div>
+			)
+		}
+		{
+			!hayTransmision && (
+				<p class="aviso-todo">
+					<strong>Cuando la transmisión esté lista:</strong> en
+					<code>src/config/sitio.ts</code>, dentro de <code>radio</code>, poner
+					<code>transmision.activa: true</code> y pegar el identificador del
+					video en <code>transmision.videoId</code>. El reproductor aparece
+					aquí automáticamente. Para mostrar además el botón flotante "Radio en
+					vivo" en todas las páginas, cambiar <code>radioEnVivo</code> a
+					<code>true</code>.
+				</p>
+			)
+		}
+	</section>
+
+	<!-- PROGRAMACIÓN POR DÍAS -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Programación</h2>
+		<p class="seccion-intro">Nuestra parrilla de programas por día.</p>
+
+		<ul class="rejilla rejilla-tres">
+			{
+				radio.programacion.map((bloque) => (
+					<li class="dia-programacion">
+						<h3>{bloque.dia}</h3>
+						<ul>
+							{bloque.programas.map((programa) => (
+								<li>
+									<span class="programa-hora">{programa.hora}</span>
+									<span class="programa-nombre">{programa.nombre}</span>
+									<span class="programa-presenta">Presenta: {programa.presenta}</span>
+								</li>
+							))}
+						</ul>
+					</li>
+				))
+			}
+		</ul>
+
+		<p class="aviso-todo">
+			<strong>TODO:</strong> reemplazar la parrilla en la lista
+			<code>programacion</code> de <code>src/config/sitio.ts</code>. Se pueden
+			agregar o quitar días y programas libremente.
+		</p>
+	</section>
+
+	<!-- PRESENTADORES -->
+	<section class="seccion">
+		<h2 class="seccion-titulo">Presentadores</h2>
+		<ul class="rejilla rejilla-tres">
+			{
+				radio.presentadores.map((persona) => (
+					<li class="tarjeta-persona">
+						{
+							persona.foto ? (
+								<img src={persona.foto} alt={persona.nombre} class="persona-foto" loading="lazy" />
+							) : (
+								<div class="persona-inicial" aria-hidden="true">
+									{iniciales(persona.nombre)}
+								</div>
+							)
+						}
+						<p class="persona-nombre">{persona.nombre}</p>
+						<p class="persona-cargo">{persona.programa}</p>
+					</li>
+				))
+			}
+		</ul>
+		<p class="aviso-todo">
+			<strong>TODO:</strong> reemplazar los presentadores en la lista
+			<code>presentadores</code> de <code>src/config/sitio.ts</code> y subir sus
+			fotos a <code>public/equipo/</code>.
+		</p>
+	</section>
+</BaseLayout>

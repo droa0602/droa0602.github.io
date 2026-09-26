@@ -1,0 +1,42 @@
+---
+// Listado del blog ("/blog/"). Antes este listado estaba en "/", pero esa URL
+// ahora es el Inicio de la fundación. El blog no tiene pestaña en el menú
+// (son 4: Inicio, Nosotros, Proyectos, Radio); se llega desde el enlace del
+// pie de página. Las direcciones de las entradas no cambiaron.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const entradas = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<BaseLayout
+	titulo="Blog"
+	descripcion="Noticias y actualizaciones de la Fundación FundeUpia."
+	ancho="lectura"
+>
+	<h1>Blog de FundeUpia</h1>
+	<p>Noticias, historias y novedades de nuestra fundación.</p>
+
+	<ul class="lista-entradas">
+		{
+			entradas.map((entrada) => {
+				const fecha = entrada.data.pubDate.toLocaleDateString('es-ES', {
+					day: 'numeric',
+					month: 'long',
+					year: 'numeric',
+				});
+				return (
+					<li class="tarjeta-entrada">
+						<h2>
+							<a href={`/blog/${entrada.id}/`}>{entrada.data.title}</a>
+						</h2>
+						<p class="fecha-entrada">{fecha}</p>
+						<p>{entrada.data.description}</p>
+					</li>
+				);
+			})
+		}
+	</ul>
+</BaseLayout>

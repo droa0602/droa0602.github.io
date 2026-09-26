@@ -21,8 +21,9 @@ const fechaFormateada = fecha.toLocaleDateString('es-ES', {
 });
 ---
 
-<BaseLayout titulo={titulo} descripcion={descripcion}>
-	<a href="/" class="enlace-volver">&larr; Volver al blog</a>
+<!-- ancho="lectura": columna angosta, más cómoda para leer un artículo. -->
+<BaseLayout titulo={titulo} descripcion={descripcion} ancho="lectura">
+	<a href="/blog/" class="enlace-volver">&larr; Volver al blog</a>
 	<article>
 		<header class="encabezado-entrada">
 			<p class="fecha-entrada">

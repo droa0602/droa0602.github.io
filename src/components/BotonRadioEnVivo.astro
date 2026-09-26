@@ -1,0 +1,28 @@
+---
+// Botón flotante "Radio en vivo". Lo incluye BaseLayout.astro, así que está
+// disponible en todas las páginas, y lleva a /radio/.
+//
+// VIENE DESACTIVADO. No se muestra hasta que en src/config/sitio.ts se
+// cambie `radio.radioEnVivo` de false a true. Ese es el único cambio que hay
+// que hacer cuando la emisora empiece a transmitir por internet: el
+// componente ya está montado y con sus estilos listos.
+//
+// Para que en celular no tape el pie de página, BaseLayout.astro le pone la
+// clase 'con-boton-radio' al <body> cuando el botón está activo; esa clase
+// (en global.css) le agrega al final de la página el espacio que ocupa el
+// botón.
+import { radio } from '../config/sitio';
+
+// En la propia página de la radio el botón sobra: ya estás ahí.
+const enPaginaRadio = Astro.url.pathname.replace(/\/+$/, '') === '/radio';
+const mostrar = radio.radioEnVivo && !enPaginaRadio;
+---
+
+{
+	mostrar && (
+		<a href="/radio/" class="boton-flotante-radio">
+			<span class="punto-vivo" aria-hidden="true"></span>
+			<span class="boton-flotante-texto">Radio en vivo</span>
+		</a>
+	)
+}

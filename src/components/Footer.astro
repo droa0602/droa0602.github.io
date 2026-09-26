@@ -1,13 +1,79 @@
 ---
-// Pie de página del sitio, incluido por BaseLayout.astro en todas las
-// páginas. El año se calcula en el momento del build (no en el navegador
-// del visitante), por eso queda "congelado" a la fecha en que se publicó
-// el sitio hasta el próximo despliegue.
+// Pie de página del sitio. Lo incluye BaseLayout.astro, así que aparece al
+// final de TODAS las páginas: por eso el contacto vive aquí y no en una
+// pestaña del menú.
+//
+// Ningún dato está escrito en este archivo: todo sale de
+// src/config/sitio.ts. Para cambiar el número de WhatsApp, el correo, la
+// dirección o las redes, se edita ese archivo y el cambio aparece en todas
+// las páginas a la vez.
+import { sitio, contacto, redes, enlaceWhatsapp } from '../config/sitio';
+
+// El año se calcula al compilar el sitio (no en el navegador del visitante),
+// así que se actualiza en cada despliegue.
 const anio = new Date().getFullYear();
 ---
 
 <footer class="sitio-footer">
 	<div class="contenedor">
-		<p>© {anio} Fundación FundeUpia. Todos los derechos reservados.</p>
+		<div class="footer-columnas">
+			<!-- Columna 1: identidad de la fundación -->
+			<div class="footer-columna">
+				<p class="footer-titulo">{sitio.nombreCompleto}</p>
+				<p class="footer-lema">{sitio.lema}</p>
+			</div>
+
+			<!-- Columna 2: cómo contactarnos -->
+			<div class="footer-columna">
+				<h2 class="footer-titulo">Contacto</h2>
+				<ul class="footer-lista">
+					<li>
+						<span class="footer-etiqueta">WhatsApp</span>
+						<a href={enlaceWhatsapp} target="_blank" rel="noopener">
+							{contacto.whatsappVisible}
+						</a>
+					</li>
+					<li>
+						<span class="footer-etiqueta">Correo</span>
+						<a href={`mailto:${contacto.correo}`}>{contacto.correo}</a>
+					</li>
+					<li>
+						<span class="footer-etiqueta">Dirección</span>
+						<span>{contacto.direccion}<br />{contacto.ciudad}</span>
+					</li>
+					{
+						contacto.horarioAtencion && (
+							<li>
+								<span class="footer-etiqueta">Atención</span>
+								<span>{contacto.horarioAtencion}</span>
+							</li>
+						)
+					}
+				</ul>
+			</div>
+
+			<!-- Columna 3: redes sociales y enlaces que no están en el menú -->
+			<div class="footer-columna">
+				<h2 class="footer-titulo">Síguenos</h2>
+				<ul class="footer-redes">
+					{
+						redes.map((red) => (
+							<li>
+								<a href={red.url} target="_blank" rel="noopener">
+									{red.nombre}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+				<ul class="footer-lista footer-lista-enlaces">
+					<li><a href="/blog/">Blog y noticias</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<p class="footer-derechos">
+			© {anio} {sitio.nombreCompleto}. Todos los derechos reservados.
+		</p>
 	</div>
 </footer>

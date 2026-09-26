@@ -22,4 +22,23 @@ const blog = defineCollection({
 	}),
 });
 
-export const collections = { blog };
+// Proyectos de la fundación. Cada proyecto es un archivo .md dentro de
+// src/content/proyectos/ y el nombre del archivo define su URL:
+// "huertas-comunitarias.md" se publica en /proyectos/huertas-comunitarias/.
+const proyectos = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/proyectos' }),
+	schema: z.object({
+		titulo: z.string(),
+		// Frase corta que se muestra en la tarjeta del listado y del Inicio.
+		resumen: z.string(),
+		// Ruta de la imagen dentro de /public (ej. '/proyectos/huertas.jpg').
+		// Es opcional: si falta, la tarjeta muestra un recuadro de relleno.
+		imagen: z.string().optional(),
+		// Se escribe como texto (ej. 2026-03-15) y se convierte a fecha.
+		fecha: z.coerce.date(),
+		// true = aparece también en las tarjetas destacadas del Inicio.
+		destacado: z.boolean().default(false),
+	}),
+});
+
+export const collections = { blog, proyectos };

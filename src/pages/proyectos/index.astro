@@ -1,0 +1,37 @@
+---
+// Listado de TODOS los proyectos ("/proyectos/").
+// No hay que tocar este archivo para agregar un proyecto: basta con crear un
+// nuevo .md en src/content/proyectos/ y aparece aquí solo, ordenado de más
+// reciente a más antiguo.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TarjetaProyecto from '../../components/TarjetaProyecto.astro';
+import { getCollection } from 'astro:content';
+
+const proyectos = (await getCollection('proyectos')).sort(
+	(a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
+);
+---
+
+<BaseLayout
+	titulo="Proyectos"
+	descripcion="Conoce los proyectos que la Fundación FundeUpia desarrolla con las comunidades."
+>
+	<h1>Nuestros proyectos</h1>
+	<p class="seccion-intro">
+		<!-- TODO: reemplazar por una introducción real al trabajo de la fundación. -->
+		TODO: una o dos frases que presenten el conjunto de proyectos: en qué
+		líneas trabaja la fundación y a quiénes acompaña.
+	</p>
+
+	{
+		proyectos.length === 0 ? (
+			<p>Todavía no hay proyectos publicados.</p>
+		) : (
+			<ul class="rejilla">
+				{proyectos.map((proyecto) => (
+					<TarjetaProyecto proyecto={proyecto} />
+				))}
+			</ul>
+		)
+	}
+</BaseLayout>

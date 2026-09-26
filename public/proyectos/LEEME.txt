@@ -1,0 +1,2 @@
+Imagenes de los proyectos. Luego se escribe su ruta en el campo `imagen`
+del archivo .md del proyecto, por ejemplo: /proyectos/huertas.jpg

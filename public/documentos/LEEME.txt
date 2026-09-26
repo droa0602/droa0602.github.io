@@ -1,0 +1,3 @@
+Los PDFs de transparencia (informe de gestion, estados financieros, etc.)
+van en esta carpeta. Luego se escribe su ruta en la lista `documentos` de
+src/config/sitio.ts, por ejemplo: /documentos/informe-gestion-2025.pdf
