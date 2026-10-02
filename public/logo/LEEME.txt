@@ -1,0 +1,9 @@
+Logo de la Fundacion para el Desarrollo del Upia (vectorizado).
+
+fundeupia-logo-horizontal.svg         -> encabezado del sitio (sitio.logo en src/config/sitio.ts)
+fundeupia-logo-horizontal-blanco.svg  -> sobre fondos oscuros (pie de pagina, banners)
+fundeupia-logo.svg                    -> version vertical completa
+fundeupia-simbolo.svg                 -> solo el triangulo (tambien es /favicon.svg)
+*.png                                 -> mismas versiones en PNG transparente, para redes y documentos
+
+Texto convertido a trazos. Tipografia original: D-DIN PRO (Regular y Heavy), licencia SIL OFL.

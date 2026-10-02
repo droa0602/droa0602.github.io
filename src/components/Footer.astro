@@ -19,7 +19,13 @@ const anio = new Date().getFullYear();
 		<div class="footer-columnas">
 			<!-- Columna 1: identidad de la fundación -->
 			<div class="footer-columna">
-				<p class="footer-titulo">{sitio.nombreCompleto}</p>
+				{
+					sitio.logoClaro ? (
+						<img src={sitio.logoClaro} alt={sitio.nombreCompleto} class="footer-logo" />
+					) : (
+						<p class="footer-titulo">{sitio.nombreCompleto}</p>
+					)
+				}
 				<p class="footer-lema">{sitio.lema}</p>
 			</div>
 

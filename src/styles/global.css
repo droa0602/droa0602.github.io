@@ -13,19 +13,26 @@
 :root {
 	/* --- Colores. Cambiar aquí cambia todo el sitio. --- */
 	--color-fondo: #ffffff;
-	--color-fondo-suave: #f5f8f6; /* fondos de secciones y tarjetas */
+	--color-fondo-suave: #f6f7fa; /* fondos de secciones y tarjetas */
 	--color-texto: #1f2933;
 	--color-texto-suave: #52606d;
 
-	/* Verde institucional de la fundación (lo principal del sitio). */
-	--color-primario: #1d6b52;
-	--color-primario-oscuro: #144a39;
-	--color-primario-suave: #e7f1ec;
+	/* Azul del logo de la fundación (lo principal del sitio). */
+	--color-primario: #00205f;
+	--color-primario-oscuro: #00143d;
+	--color-primario-suave: #e8eef7;
+
+	/* Amarillo del logo. SOLO para líneas y detalles decorativos: sobre
+	   blanco no se lee como texto, ni lleva letra blanca encima. */
+	--color-amarillo: #ffc800;
 
 	/* Color secundario, usado solo en lo de la radio para diferenciarla
-	   de la fundación sin competir con el verde. */
-	--color-acento: #a8481f;
-	--color-acento-suave: #fbf0e9;
+	   de la fundación. Es un dorado oscuro de la familia del amarillo del
+	   logo, pero con contraste suficiente para texto y botones. */
+	--color-acento: #8c5e00;
+	--color-acento-oscuro: #6e4a00;
+	--color-acento-suave: #fff5d1;
+	--color-acento-borde: #f2dd9a;
 
 	/* Rojo del punto de "en vivo". */
 	--color-vivo: #d92d20;
@@ -102,7 +109,8 @@ body.con-boton-radio {
    --------------------------------------------------------------------------- */
 
 .sitio-header {
-	border-bottom: 1px solid var(--color-borde);
+	/* Franja amarilla del logo debajo del encabezado. */
+	border-bottom: 3px solid var(--color-amarillo);
 	padding: 0.85rem 0;
 	background: var(--color-fondo);
 	position: sticky;
@@ -132,7 +140,8 @@ body.con-boton-radio {
 }
 
 .marca-logo {
-	height: 42px;
+	/* Logo horizontal: a menos altura, la línea fina del nombre no se lee. */
+	height: 46px;
 	width: auto;
 	border-radius: 0;
 }
@@ -442,7 +451,7 @@ body.con-boton-radio {
 /* Bloque pequeño de la radio en el Inicio (usa el color de acento). */
 .bloque-radio {
 	background: var(--color-acento-suave);
-	border: 1px solid #f0d9c9;
+	border: 1px solid var(--color-acento-borde);
 	border-radius: var(--radio);
 	padding: 1.5rem 1.25rem;
 	margin: 2.5rem 0;
@@ -477,7 +486,7 @@ body.con-boton-radio {
 }
 
 .bloque-radio .boton:hover {
-	background: #863816;
+	background: var(--color-acento-oscuro);
 }
 
 .frecuencia-grande {
@@ -714,7 +723,7 @@ body.con-boton-radio {
 }
 
 .boton-flotante-radio:hover {
-	background: #863816;
+	background: var(--color-acento-oscuro);
 	color: #fff;
 }
 
@@ -845,9 +854,9 @@ body.con-boton-radio {
 		padding: 0.35rem 0;
 	}
 
-	/* Subrayado verde en la pestaña activa (solo en escritorio). */
+	/* Subrayado amarillo en la pestaña activa (solo en escritorio). */
 	.nav-principal a[aria-current='page'] {
-		box-shadow: inset 0 -2px 0 var(--color-primario);
+		box-shadow: inset 0 -3px 0 var(--color-amarillo);
 	}
 
 	.rejilla {
@@ -877,6 +886,10 @@ body.con-boton-radio {
 
 	.marca-texto {
 		font-size: 1.45rem;
+	}
+
+	.marca-logo {
+		height: 56px;
 	}
 
 	.encabezado-entrada h1 {
@@ -921,11 +934,29 @@ body.con-boton-radio {
    --------------------------------------------------------------------------- */
 
 .sitio-footer {
-	border-top: 1px solid var(--color-borde);
-	background: var(--color-fondo-suave);
+	/* Pie en el azul del logo, con la misma franja amarilla del encabezado. */
+	border-top: 3px solid var(--color-amarillo);
+	background: var(--color-primario);
 	padding: 2rem 0 1.5rem;
-	color: var(--color-texto-suave);
+	color: rgba(255, 255, 255, 0.82);
 	font-size: 0.95rem;
+}
+
+.sitio-footer a {
+	color: #fff;
+}
+
+.sitio-footer a:hover {
+	color: var(--color-amarillo);
+}
+
+/* Logo blanco del pie. Va sin bordes redondeados (la regla general de img
+   los pone). */
+.footer-logo {
+	height: 52px;
+	width: auto;
+	border-radius: 0;
+	margin: 0 0 0.9rem;
 }
 
 .footer-columnas {
@@ -937,7 +968,7 @@ body.con-boton-radio {
 .footer-titulo {
 	font-size: 1rem;
 	font-weight: 700;
-	color: var(--color-texto);
+	color: #fff;
 	margin: 0 0 0.6rem;
 }
 
@@ -961,7 +992,7 @@ body.con-boton-radio {
 	text-transform: uppercase;
 	letter-spacing: 0.04em;
 	font-weight: 700;
-	color: var(--color-texto);
+	color: var(--color-amarillo);
 }
 
 .footer-lista-enlaces {
@@ -971,7 +1002,7 @@ body.con-boton-radio {
 .footer-derechos {
 	margin: 2rem 0 0;
 	padding-top: 1.25rem;
-	border-top: 1px solid var(--color-borde);
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
 	font-size: 0.85rem;
 }
 

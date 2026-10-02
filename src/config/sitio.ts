@@ -22,8 +22,11 @@ export const sitio = {
 		'Fundación FundeUpia: educación, acompañamiento social y desarrollo comunitario.',
 	// Ruta del logo dentro de /public. Si se deja en '', el encabezado muestra
 	// el nombre escrito en texto.
-	// TODO: subir el logo a public/logo.svg (o .png) y poner la ruta aquí.
-	logo: '',
+	// Las demás versiones del logo están en public/logo/ (ver LEEME.txt).
+	logo: '/logo/fundeupia-logo-horizontal.svg',
+	// Versión con letras blancas, para el pie de página (fondo azul). Si se
+	// deja en '', el pie muestra el nombre escrito en texto.
+	logoClaro: '/logo/fundeupia-logo-horizontal-blanco.svg',
 };
 
 /** Datos de contacto. Se muestran en el pie de página de TODAS las páginas. */
